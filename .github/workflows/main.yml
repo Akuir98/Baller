@@ -1,0 +1,33 @@
+name: Build LÖVE File
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Create LÖVE file
+      run: |
+        cd $GITHUB_WORKSPACE
+        zip -r baller. love . -x ".git/*" ".gitignore" ".github/*" "*.md" "LICENSE"
+        ls -lh baller.love
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: baller-love
+        path: baller.love
+    
+    - name: Create or Update Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "baller.love"
+        tag: "latest"
+        allowUpdates: true
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
